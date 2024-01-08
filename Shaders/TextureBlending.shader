@@ -6,11 +6,12 @@ Shader "Custom/TextureBlendingUnlitShader"
 {
     Properties{
         _Tint ("Tint", Color) = (1,1,1,1)
-        _Texture1 ("Surface Texture", 2D) = "white" {}
-        _Texture2 ("Cover Texture", 2D) = "white" {}
-        [NoScaleOffset] _Texture1_Height ("Surface Texture Height", 2D) = "grey" {}
-        [NoScaleOffset] _Texture2_Height ("Cover Texture Height", 2D) = "grey" {}
+        _Texture1 ("Under Surface Albedo", 2D) = "white" {}
+        _Texture2 ("Cover Albedo", 2D) = "white" {}
+        [NoScaleOffset] _Texture1_Height ("Undr Srfc Text Height", 2D) = "grey" {}
+        [NoScaleOffset] _Texture2_Height ("Covr Text Height", 2D) = "grey" {}
         _SmoothStepVars ("SmthStpPre/PostMask", Vector) = (2,2,2,1)
+        _HeightAdjust ("Height Adjust", Range(0, 0.5)) = 0
     }
     SubShader{ 
 
@@ -29,6 +30,8 @@ Shader "Custom/TextureBlendingUnlitShader"
             sampler2D _Texture1, _Texture2, _Texture1_Height, _Texture2_Height;
             float4 _Texture1_ST;
             float4 _Texture2_ST;
+            float4 _SmoothStepVars;
+            float _HeightAdjust;
 
             struct Interpolators {
                 float4 position : SV_POSITION;
@@ -54,9 +57,10 @@ Shader "Custom/TextureBlendingUnlitShader"
 
             float4 Frag (Interpolators i) : SV_TARGET {
                 
-                float4 mixMap = generateMixMapTexture(i.vertexColor, tex2D(_Texture1_Height, i.uv), tex2D(_Texture2_Height, i.uv2));
+                float4 mixMap = generateMixMapTexture(i.vertexColor, tex2D(_Texture1_Height, i.uv) + _HeightAdjust, tex2D(_Texture2_Height, i.uv2), _SmoothStepVars);
 
-                return tex2D(_Texture2, i.uv2) * mixMap + tex2D(_Texture1, i.uv) * (mixMap * -1 + 1);
+                float4 baseColor = tex2D(_Texture2, i.uv2) * mixMap + tex2D(_Texture1, i.uv) * (mixMap * -1 + 1);
+                return baseColor;
                 //return mixMap;
                 //return i.vertexColor;
             }
