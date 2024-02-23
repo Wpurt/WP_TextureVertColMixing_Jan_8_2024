@@ -62,7 +62,8 @@ Shader "Custom/TextureBlendingUnlitShader"
                     _HeightAdjust, tex2D(_Texture2_Height, i.uv2), _SmoothStepVars);
 
                 //get the color of the pixels before lighting
-                float4 baseColor = tex2D(_Texture2, i.uv2) * mixMap + tex2D(_Texture1, i.uv) * (mixMap * -1 + 1);
+                float4 baseColor = tex2D(_Texture2, i.uv2) * mixMap + tex2D(_Texture1, i.uv) * 
+                    (mixMap * -1 + 1);
                 
                 //Lighting
                 float4 diffuse = baseColor * (i.vertexColor.g * -1 + 1);
