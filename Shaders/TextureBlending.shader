@@ -58,7 +58,8 @@ Shader "Custom/TextureBlendingUnlitShader"
             float4 Frag (Interpolators i) : SV_TARGET {
                 
                 //generate the mask to mix textures
-                float4 mixMap = generateMixMapTexture(i.vertexColor, tex2D(_Texture1_Height, i.uv) + _HeightAdjust, tex2D(_Texture2_Height, i.uv2), _SmoothStepVars);
+                float4 mixMap = generateMixMapTexture(i.vertexColor, tex2D(_Texture1_Height, i.uv) + 
+                    _HeightAdjust, tex2D(_Texture2_Height, i.uv2), _SmoothStepVars);
 
                 //get the color of the pixels before lighting
                 float4 baseColor = tex2D(_Texture2, i.uv2) * mixMap + tex2D(_Texture1, i.uv) * (mixMap * -1 + 1);
