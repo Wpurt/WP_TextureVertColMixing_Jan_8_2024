@@ -10,6 +10,8 @@ float4 generateMixMapTexture(float3 vertCol, float4 texOne, float4 texTwo, float
     float4 mixMapTwo = (clamp(0, 1, smoothstep(_SmoothStepVars.z,_SmoothStepVars.w,(vertCol.r * -1 + 1)) / texTwo) * -1 + 1);
     mixMapTwo = smoothstep(.4,.6,mixMapTwo);
 
+    // the final mix map texture is the result of combining the two textures and clamping the range
+    // from zero two one to prevent the colors from breaking on the final render
     float4 mixMap = clamp(0, 1, mixMapOne + mixMapTwo);
 
     return mixMapOne;
